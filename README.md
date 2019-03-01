@@ -86,3 +86,59 @@ zappa undeploy dev
 ```bash
 python cfn.py -c -t cf_with_custom_domain
 ```
+
+## RDS for Development([rds_dev.py](templates/rds_dev.py))
+
+개발용의 최소한의 RDS 를 생성합니다.
+
+```bash
+python cfn.py -c -t rds_dev 
+```
+
+## Zappa with RDS([app_with_rds.py](app_with_rds.py))
+
+`Lambda` 에서 `RDS` 로 접근하기 위해서는 `vpc_config` 을 설정해 주어야 한다.
+5
+```bash
+virtualenv --python=python3.6 mysql-test
+source mysql-test/bin/activate
+pip install zappa
+pip install flask
+zappa init
+```
+
+```bash
+pip install flask
+pip install flask_sqlalchemy
+pip install pymysql
+```
+
+```json
+{
+    "dev": {
+        "app_function": "app_with_rds.app",
+        "aws_region": "ap-northeast-2",
+        "profile_name": "default",
+        "project_name": "mysql-test",
+        "runtime": "python3.6",
+        "s3_bucket": "zappa-ij4XXXXXX",
+        "debug": true,
+        "log_level": "DEBUG",
+        "environment_variables": {
+            "DB_URL": "skyer9-test-rds-dev.XXXXXXXXXXXXX.ap-northeast-2.rds.amazonaws.com",
+            "DB_NAME": "db_app",
+            "DB_USER": "appuser",
+            "DB_PASSWORD": "wYIr9zpQIzuVTCqPXXXXXXXXXXX"
+        },
+        "vpc_config": {
+            "SubnetIds": [
+                "subnet-070f8XXXXXXXXXXXX",
+                "subnet-08266XXXXXXXXXXXX"
+            ],
+            "SecurityGroupIds": [
+                "sg-0f7cdaXXXXXXXXXXX"
+            ]
+        }
+    }
+}
+```

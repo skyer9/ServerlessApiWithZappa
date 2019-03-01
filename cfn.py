@@ -32,6 +32,12 @@ def update(template_name):
         cfn_update(cfn_conn, stack_name, template.get())
         return 0
 
+    if template_name == 'rds_dev':
+        print("Updating stack: {0}".format(stack_name))
+        from templates import rds_dev as template
+        cfn_update(cfn_conn, stack_name, template.get())
+        return 0
+
     return 1
 
 
@@ -45,6 +51,11 @@ def create(template_name):
         cfn_create(cfn_conn, stack_name, template.get())
         return 0
 
+    if template_name == 'rds_dev':
+        from templates import rds_dev as template
+        cfn_create(cfn_conn, stack_name, template.get())
+        return 0
+
     return 1
 
 
@@ -55,6 +66,7 @@ def parse_args():
     parser.add_argument('-t', '--template',
                         choices=[
                             'cf_with_custom_domain',
+                            'rds_dev',
                         ],
                         required=True,
                         type=str)
